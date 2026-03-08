@@ -15,7 +15,7 @@ export default async function DashboardLayout({
     }
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background text-foreground transition-colors duration-500 relative">
+        <div className="flex h-screen overflow-hidden bg-white text-[#1F2937] transition-colors duration-500 relative">
             {/* Clean White Aesthetic - Removed Ambient Gradients */}
 
             {/* Static sidebar for desktop */}
