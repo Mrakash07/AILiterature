@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import { Paper } from './paperService'
 
 // Types for AI responses
@@ -61,35 +60,46 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 2, delayMs = 1000): 
 
 // Gemini Provider Implementation
 class GeminiProvider implements AIProvider {
-    private model: any
-
     constructor() {
-        const apiKey = process.env.GEMINI_API_KEY
-        if (!apiKey) {
-            console.error('GEMINI_API_KEY is not set in environment variables!')
-        }
-        const genAI = new GoogleGenerativeAI(apiKey || '')
-        this.model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     }
 
     private async callModel(prompt: string): Promise<string> {
+        const apiKey = process.env.GEMINI_API_KEY
+        if (!apiKey) throw new Error("GEMINI_API_KEY is not set.")
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`
+
         try {
             return await withRetry(async () => {
-                const result = await this.model.generateContent(prompt)
-                const response = result.response
-                return response.text()
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                })
+
+                const data = await response.json()
+                if (data.error) {
+                    throw new Error(data.error.message || 'Gemini API Error')
+                }
+
+                if (!data.candidates || data.candidates.length === 0) {
+                    throw new Error('No candidates returned from Gemini API')
+                }
+
+                return data.candidates[0].content.parts[0].text
             })
         } catch (err: any) {
-            const status = err?.status || err?.response?.status
             const message = err?.message || ''
 
-            if (status === 429 || message.includes('quota')) {
+            if (message.includes('quota') || message.includes('429')) {
                 throw new Error("Gemini API quota exceeded. Please try again later or check your API key limits.")
             }
-            if (status === 400) {
+            if (message.includes('safety') || message.includes('blocked')) {
                 throw new Error("Invalid request to Gemini API. This might be due to safety filters or an invalid prompt.")
             }
-            if (status === 401 || status === 403) {
+            if (message.includes('key') || message.includes('auth')) {
                 throw new Error("Invalid or unauthorized Gemini API key. Please check your .env.local configuration.")
             }
 
@@ -121,7 +131,9 @@ IMPORTANT: Return ONLY the JSON object, no markdown formatting, no code blocks.`
         try {
             responseText = await this.callModel(prompt)
         } catch (err: any) {
-            console.error("Gemini Summary Error (falling back to placeholders):", err.message)
+            console.error("Gemini Summary Error Details:", err)
+            console.error("Gemini Summary Error Message:", err.message)
+            console.error("API Key present in Next.js?:", !!process.env.GEMINI_API_KEY)
             isMock = true
         }
 

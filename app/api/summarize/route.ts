@@ -29,9 +29,9 @@ export async function POST(request: Request) {
 
             if (!snapshot.empty) {
                 const summary = snapshot.docs[0].data() as any
-                // If it's a mock summary, ignore it and generate a real one
                 if (summary.is_mock || summary.objective?.includes('[MOCK]')) {
-                    console.log('Found mock summary, will regenerate real one.')
+                    console.log('Found mock summary, deleting it and generating a real one.')
+                    await snapshot.docs[0].ref.delete()
                 } else {
                     return NextResponse.json({ summary })
                 }

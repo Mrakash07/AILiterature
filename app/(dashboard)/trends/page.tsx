@@ -80,14 +80,28 @@ export default async function TrendsPage() {
             const monthCounts: Record<string, number> = {}
             summariesSnapshot.docs.forEach((doc: any) => {
                 const data = doc.data()
+                let date: Date | null = null
+
                 if (data.created_at?.seconds) {
-                    const date = new Date(data.created_at.seconds * 1000)
+                    date = new Date(data.created_at.seconds * 1000)
+                } else if (data.created_at && typeof data.created_at === 'string') {
+                    date = new Date(data.created_at)
+                } else if (data.created_at instanceof Date) {
+                    date = data.created_at
+                }
+
+                if (date && !isNaN(date.getTime())) {
                     const key = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`
                     monthCounts[key] = (monthCounts[key] || 0) + 1
                 }
             })
             summariesByMonth = Object.entries(monthCounts)
                 .map(([month, count]) => ({ month, count }))
+                .sort((a, b) => {
+                    const dateA = new Date(a.month)
+                    const dateB = new Date(b.month)
+                    return dateA.getTime() - dateB.getTime()
+                })
                 .slice(-6)
 
             // Fetch saved papers count
@@ -120,14 +134,14 @@ export default async function TrendsPage() {
                 </Link>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div>
-                        <h1 className="text-4xl font-extrabold tracking-tight text-[#1F2937]">Research Analytics</h1>
-                        <p className="text-[#6B7C93] text-lg font-medium mt-2">
+                        <h1 className="text-4xl font-extrabold tracking-tight text-foreground">Research Analytics</h1>
+                        <p className="text-muted-foreground text-lg font-medium mt-2">
                             Your research activity and insights at a glance.
                         </p>
                     </div>
-                    <div className="flex items-center gap-3 px-6 py-3 bg-white rounded-2xl border border-gray-100 shadow-soft">
+                    <div className="flex items-center gap-3 px-6 py-3 bg-card rounded-2xl border border-border shadow-soft">
                         <Activity className="h-5 w-5 text-emerald-500" />
-                        <span className="text-sm font-bold text-[#1F2937]">{totalSearches + totalSummaries + totalSavedPapers} Total Activities</span>
+                        <span className="text-sm font-bold text-foreground">{totalSearches + totalSummaries + totalSavedPapers} Total Activities</span>
                     </div>
                 </div>
             </div>
@@ -140,7 +154,7 @@ export default async function TrendsPage() {
                     { label: 'Saved Papers', value: totalSavedPapers, icon: Bookmark, color: '#4F8FCC', bg: '#EBF2FA' },
                     { label: 'Literature Reviews', value: totalReviews, icon: BookOpen, color: '#0F4C81', bg: '#E0EAF4' },
                 ].map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-[2rem] p-8 border border-gray-50 shadow-soft relative overflow-hidden group hover:shadow-xl transition-all">
+                    <div key={stat.label} className="bg-card rounded-[2rem] p-8 border border-border shadow-soft relative overflow-hidden group hover:shadow-xl transition-all">
                         <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform">
                             <stat.icon className="h-16 w-16" style={{ color: stat.color }} />
                         </div>
@@ -148,8 +162,8 @@ export default async function TrendsPage() {
                             <div className="p-3 rounded-xl w-fit mb-6" style={{ backgroundColor: stat.bg, color: stat.color }}>
                                 <stat.icon className="h-6 w-6" />
                             </div>
-                            <p className="text-4xl font-extrabold text-[#1F2937] mb-2">{stat.value}</p>
-                            <p className="text-xs font-bold text-[#6B7C93] uppercase tracking-widest">{stat.label}</p>
+                            <p className="text-4xl font-extrabold text-foreground mb-2">{stat.value}</p>
+                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{stat.label}</p>
                         </div>
                     </div>
                 ))}
@@ -221,23 +235,23 @@ export default async function TrendsPage() {
             </div>
 
             {/* Recent Search History */}
-            <div className="bg-white rounded-[2.5rem] p-10 shadow-soft border border-gray-50">
+            <div className="bg-card rounded-[2.5rem] p-10 shadow-soft border border-border">
                 <div className="flex items-center gap-4 mb-8">
-                    <div className="p-2 bg-[#F3F7FC] rounded-lg text-[#1B5FA7]">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <Clock className="h-5 w-5" />
                     </div>
-                    <h2 className="text-2xl font-extrabold text-[#1F2937]">Recent Searches</h2>
+                    <h2 className="text-2xl font-extrabold text-foreground">Recent Searches</h2>
                 </div>
                 {recentSearches.length > 0 ? (
                     <div className="space-y-3">
                         {recentSearches.map((search, i) => (
                             <Link key={i} href={`/search?q=${encodeURIComponent(search.query)}`} className="block group">
-                                <div className="px-6 py-4 rounded-xl bg-[#F3F7FC]/80 border border-transparent hover:border-[#1B5FA7]/20 hover:bg-white transition-all flex items-center justify-between">
+                                <div className="px-6 py-4 rounded-xl bg-primary/5 border border-transparent hover:border-primary/20 hover:bg-background transition-all flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <SearchIcon className="h-4 w-4 text-[#6B7C93]" />
-                                        <span className="text-sm font-bold text-[#6B7C93] group-hover:text-[#1F2937] transition-colors">{search.query}</span>
+                                        <SearchIcon className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">{search.query}</span>
                                     </div>
-                                    <span className="text-[10px] font-bold text-[#6B7C93] uppercase tracking-widest">
+                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                         {search.created_at ? new Date(search.created_at * 1000).toLocaleDateString() : ''}
                                     </span>
                                 </div>

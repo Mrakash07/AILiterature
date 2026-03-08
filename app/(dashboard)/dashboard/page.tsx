@@ -159,7 +159,7 @@ export default async function DashboardPage() {
                             Research Session Alpha
                         </div>
                     </div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-[#1F2937]">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
                         Welcome, {user?.displayName || user?.email?.split('@')[0]?.replace(/[0-9]+$/, '') || 'Researcher'}
                     </h1>
                     <p className="text-muted-foreground text-lg font-medium">
@@ -177,7 +177,7 @@ export default async function DashboardPage() {
 
             {/* Quick Actions / Featured Insights */}
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="bg-white rounded-[2.5rem] p-8 shadow-soft border border-gray-50 relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
+                <div className="bg-card rounded-[2.5rem] p-8 shadow-soft border border-border relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
                         <BrainCircuit className="h-20 w-20 text-primary" />
                     </div>
@@ -207,7 +207,7 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-[2.5rem] p-8 shadow-soft border border-gray-50 relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
+                <div className="bg-card rounded-[2.5rem] p-8 shadow-soft border border-border relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
                         <TrendingUp className="h-20 w-20 text-primary" />
                     </div>
@@ -218,7 +218,7 @@ export default async function DashboardPage() {
                         <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Research Trends</h3>
                         <p className="text-xl font-bold text-foreground mb-6">Market Momentum</p>
                         <div className="space-y-4">
-                            <p className="text-sm text-[#6B7C93] leading-relaxed italic">
+                            <p className="text-sm text-muted-foreground leading-relaxed italic">
                                 "Real-time analysis of global academic velocity."
                             </p>
                         </div>
@@ -249,7 +249,7 @@ export default async function DashboardPage() {
                 {/* Main Content Area */}
                 <div className="lg:col-span-2 space-y-12">
                     {/* Saved Papers */}
-                    <div className="bg-white rounded-[2.5rem] p-10 shadow-soft border border-gray-50">
+                    <div className="bg-card rounded-[2.5rem] p-10 shadow-soft border border-border">
                         <div className="flex items-center justify-between mb-10">
                             <div className="flex items-center gap-4">
                                 <div className="p-2 bg-primary/5 rounded-lg text-primary">
@@ -269,7 +269,7 @@ export default async function DashboardPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="border-2 border-dashed border-gray-100 rounded-[2.5rem] py-16 text-center bg-primary/5">
+                            <div className="border-2 border-dashed border-border rounded-[2.5rem] py-16 text-center bg-primary/5">
                                 <p className="text-muted-foreground font-medium text-lg mb-6">Your research library is empty.</p>
                                 <Link href="/search">
                                     <button className="px-8 py-3 border-2 border-primary text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all">
@@ -281,7 +281,7 @@ export default async function DashboardPage() {
                     </div>
 
                     {/* Recent Analyses / Summaries */}
-                    <div className="bg-white rounded-[2.5rem] p-10 shadow-soft border border-gray-50">
+                    <div className="bg-card rounded-[2.5rem] p-10 shadow-soft border border-border">
                         <div className="flex items-center gap-4 mb-10">
                             <div className="p-2 bg-primary/10 rounded-lg text-primary">
                                 <Sparkles className="h-5 w-5" />
@@ -293,7 +293,7 @@ export default async function DashboardPage() {
                             {summaries.length > 0 ? (
                                 summaries.slice(0, 4).map((s) => (
                                     <Link key={s.id} href={`/paper/${s.paper_id}`} className="block group">
-                                        <div className="p-6 rounded-2xl bg-primary/5 hover:bg-white border border-transparent hover:border-gray-100 hover:shadow-md transition-all duration-300">
+                                        <div className="p-6 rounded-2xl bg-primary/5 hover:bg-background border border-transparent hover:border-border hover:shadow-md transition-all duration-300">
                                             <div className="flex justify-between items-start gap-6">
                                                 <div className="space-y-2 flex-1">
                                                     <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{s.papers?.title}</h3>
@@ -301,7 +301,7 @@ export default async function DashboardPage() {
                                                         "{s.displaySummary}"
                                                     </p>
                                                 </div>
-                                                <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm text-primary">
+                                                <div className="bg-background p-3 rounded-xl border border-border shadow-sm text-primary">
                                                     <FileText className="h-5 w-5" />
                                                 </div>
                                             </div>
@@ -309,7 +309,7 @@ export default async function DashboardPage() {
                                     </Link>
                                 ))
                             ) : (
-                                <p className="text-[#6B7C93] text-center py-10 font-medium">No recent analyses found.</p>
+                                <p className="text-muted-foreground text-center py-10 font-medium">No recent analyses found.</p>
                             )}
                         </div>
                     </div>
@@ -319,15 +319,15 @@ export default async function DashboardPage() {
                 <div className="space-y-12">
 
                     {/* Recent Searches */}
-                    <div className="bg-white rounded-[2.5rem] p-10 shadow-soft border border-gray-50">
+                    <div className="bg-card rounded-[2.5rem] p-10 shadow-soft border border-border">
                         <div className="flex items-center gap-3 mb-8">
-                            <Clock className="h-5 w-5 text-[#6B7C93]" />
-                            <h2 className="text-xs font-bold tracking-[0.2em] text-[#6B7C93] uppercase">Query History</h2>
+                            <Clock className="h-5 w-5 text-muted-foreground" />
+                            <h2 className="text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase">Query History</h2>
                         </div>
                         <div className="space-y-3">
                             {searches.map((search) => (
                                 <Link key={search.id} href={`/search?q=${encodeURIComponent(search.query)}`} className="block group">
-                                    <div className="px-5 py-4 rounded-xl bg-primary/5 border border-transparent hover:border-primary/20 hover:bg-white transition-all flex items-center justify-between">
+                                    <div className="px-5 py-4 rounded-xl bg-primary/5 border border-transparent hover:border-primary/20 hover:bg-background transition-all flex items-center justify-between">
                                         <span className="text-sm font-bold text-muted-foreground group-hover:text-foreground truncate mr-4">
                                             {search.query}
                                         </span>
