@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { verifyAuth } from '@/lib/auth-utils'
 import { redirect } from 'next/navigation'
 import { adminDb } from '@/lib/firebase-admin'

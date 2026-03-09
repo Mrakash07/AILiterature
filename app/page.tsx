@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { verifyAuth } from '@/lib/auth-utils'
 import { LandingNavbar } from '@/components/layout/landing-navbar'
 import Link from 'next/link'

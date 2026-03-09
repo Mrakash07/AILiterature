@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { verifyAuth } from '@/lib/auth-utils'
 import { adminDb } from '@/lib/firebase-admin'
 import { ReviewGenerator } from '@/components/literature-review/review-generator'

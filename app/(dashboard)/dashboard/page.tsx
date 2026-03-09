@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { verifyAuth } from '@/lib/auth-utils'
 import { adminDb } from '@/lib/firebase-admin'
 import Link from 'next/link'
